@@ -6,10 +6,15 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/hello", helloHandler)
 	http.ListenAndServe("localhost:8000", nil)
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "URL.Path = %q\n", r.URL.Path)
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "URL path = %q\n", r.URL.Path)
+}
+
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "URL path = %q\n", r.URL.Path)
 }
