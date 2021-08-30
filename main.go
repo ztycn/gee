@@ -2,19 +2,26 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 )
 
+type Engine struct{}
+
+func (e *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	switch req.URL.Path {
+	case "/":
+		fmt.Fprintf(w, "URL.Path = %q\n", req.URL.Path)
+	case "hello":
+		for k, v := range req.Header {
+			fmt.Fprintf(w, "Header%q = [%q]", k, v)
+		}
+	default:
+		fmt.Fprintf(w, "404 NOT FOUND: %s\n", req.URL)
+	}
+}
+
 func main() {
-	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/hello", helloHandler)
-	http.ListenAndServe("localhost:8000", nil)
-}
-
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "URL path = %q\n", r.URL.Path)
-}
-
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "URL path = %q\n", r.URL.Path)
+	engine := new(Engine)
+	log.Fatal(http.ListenAndServe(":8080", engine))
 }
